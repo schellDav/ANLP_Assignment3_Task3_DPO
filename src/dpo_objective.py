@@ -82,18 +82,28 @@ def dpo_loss(
     -------
     np.ndarray or float
         Per-example loss if reduction="none", otherwise a scalar.
-
-    TODO
-    ----
-    Implement:
-        logits = dpo_logits(...)
-        losses = -log(sigmoid(logits))
-
-    Use a numerically stable identity:
-        -log(sigmoid(z)) = log(1 + exp(-z)) = np.logaddexp(0, -z)
     """
-    # TODO: replace this with your implementation.
-    raise NotImplementedError("Implement dpo_loss in src/dpo_objective.py")
+    # 1. Compute DPO logits (z)
+    logits = dpo_logits(
+        policy_chosen_logps,
+        policy_rejected_logps,
+        ref_chosen_logps,
+        ref_rejected_logps,
+        beta=beta,
+    )
+    
+    # 2. Compute stable losses using identity: -log(sigmoid(z)) = log(1 + exp(-z))
+    losses = np.logaddexp(0, -logits)
+    
+    # 3. Apply the requested reduction
+    if reduction == "mean":
+        return float(np.mean(losses))
+    elif reduction == "sum":
+        return float(np.sum(losses))
+    elif reduction == "none":
+        return losses
+    else:
+        raise ValueError(f"Unknown reduction: {reduction}")
 
 
 def preference_accuracy(
