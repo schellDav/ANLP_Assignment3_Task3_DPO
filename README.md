@@ -1,4 +1,4 @@
-# Homework 3, Part 1.3: Direct Preference Optimization (DPO) Objective
+# Direct Preference Optimization (DPO) Objective
 
 This repository contains the completed implementation of the Direct Preference Optimization (DPO) loss function in `src/dpo_objective.py`.
 
